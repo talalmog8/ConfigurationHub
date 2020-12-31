@@ -14,5 +14,27 @@ namespace Configuration.Data
         public DbSet<ConfigAuthor> ConfigAuthors { get; set; }
         public DbSet<ConfigContent> ConfigContents { get; set; }
         public DbSet<Domain.System> ConfigSystems { get; set; }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            builder.Entity<Config>(entity =>
+            {
+                entity.HasIndex(c => c.LastModified);
+                entity.Property(c => c.LastModified).IsRequired();
+            });
+
+            builder.Entity<ConfigAuthor>(entity =>
+            {
+                entity.HasIndex(a => new { a.FirstName, a.LastName });
+                entity.Property(a => a.FirstName).IsRequired();
+                entity.Property(a => a.LastName).IsRequired();
+            });
+
+            builder.Entity<Domain.System>(entity =>
+            {
+                entity.HasIndex(s => s.MicroserviceName);
+                entity.Property(s => s.MicroserviceName).IsRequired();               
+            });
+        }
     }
 }
