@@ -4,6 +4,11 @@ namespace Configuration.Domain
 {
     public class Config
     {
+        public Config()
+        {
+            LastModified = DateTime.UtcNow;
+        }
+
         public int Id { get; set; }
         public DateTime LastModified { get; set; }
         public ConfigAuthor Author { get; set; }
