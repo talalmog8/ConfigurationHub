@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
+using System.Text.Json.Serialization;
 
 namespace Configuration.Domain
 {
@@ -13,6 +15,7 @@ namespace Configuration.Domain
         public string FirstName { get; set; }
         public string LastName { get; set; }
         
+        [JsonIgnore]
         public List<Config> Configs { get; set; }
     }
 }

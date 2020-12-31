@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace Configuration.Domain
 {
@@ -6,6 +7,8 @@ namespace Configuration.Domain
     {
         public int Id { get; set;}
         public string MicroserviceName { get; set; }
+
+        [JsonIgnore]
         public List<Config> Configs { get; set; }
     }
 }
