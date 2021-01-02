@@ -32,7 +32,9 @@ namespace ConfigurationHub.Controllers
             return await _context.Configs
                 .Include(x => x.Author)
                 .Include(y => y.ConfigContent)
-                .Include(t => t.System).ToListAsync();
+                .Include(t => t.System)
+                .OrderBy(t => t.LastModified)
+                .ToListAsync();
         }
 
         // GET: api/Configs/5
