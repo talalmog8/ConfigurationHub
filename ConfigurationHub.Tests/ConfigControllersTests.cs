@@ -2,15 +2,14 @@
 using Configuration.Data;
 using Configuration.Domain;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
 
 namespace ConfigurationHub.Tests
 {
-    public class ConfigsControllerTests
+    public class ConfigControllersTests
     {
         protected DbContextOptions<ConfigurationContext> ContextOptions { get; }
 
-        protected ConfigsControllerTests(DbContextOptions<ConfigurationContext> contextOptions)
+        protected ConfigControllersTests(DbContextOptions<ConfigurationContext> contextOptions)
         {
             ContextOptions = contextOptions;
             Seed();
