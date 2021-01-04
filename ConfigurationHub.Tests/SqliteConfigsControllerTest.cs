@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Text.Json;
 using Configuration.Data;
 using Configuration.Domain;
@@ -77,6 +78,51 @@ namespace ConfigurationHub.Tests
                 Assert.Equal("Yonatan", item.Author.FirstName);
                 Assert.Equal("SystemName", item.System.MicroserviceName);
                 Assert.Equal(2000, JObject.Parse(item.ConfigContent.Content).GetValue("Port"));
+            }
+        }
+
+        [Fact]
+        public void CanUpdateItem()
+        {
+            Config config;
+
+            using (var context = new ConfigurationContext(ContextOptions))
+            {
+                var controller = new ConfigsController(context);
+
+                config = controller.GetConfigs().Result.Value.ElementAt(0);
+            }
+
+            using (var context = new ConfigurationContext(ContextOptions))
+            {
+                var controller = new ConfigsController(context);
+
+                config.LastModified = new DateTime(2000, 1, 1, 1, 1, 1);
+
+                controller.PutConfig(config.Id, config).Wait();
+            }
+
+
+            using (var context = new ConfigurationContext(ContextOptions))
+            {
+                var controller = new ConfigsController(context);
+
+                var actual = controller.GetConfig(config.Id).Result.Value;
+
+                Assert.Equal(new DateTime(2000, 1, 1, 1, 1, 1), actual.LastModified);
+            }
+        }
+
+        [Fact]
+        public void CanDeleteItem()
+        {
+            using (var context = new ConfigurationContext(ContextOptions))
+            {
+                var controller = new ConfigsController(context);
+
+                var config = controller.GetConfigs().Result.Value.ElementAt(0);
+                controller.DeleteConfig(config.Id).Wait();
+                Assert.Throws<AggregateException>(() => controller.GetConfig(config.Id).Result);
             }
         }
     }
