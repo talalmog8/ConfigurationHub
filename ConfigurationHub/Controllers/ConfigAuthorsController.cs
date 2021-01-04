@@ -23,7 +23,7 @@ namespace ConfigurationHub.Controllers
 
         // GET: api/ConfigAuthors
         [HttpGet("{skip}/{limit}")]
-        public async Task<ActionResult<IEnumerable<AuthorAndConfigs>>> GetConfigAuthors(int skip, int limit)
+        public async Task<ActionResult<IEnumerable<AuthorAndConfigs>>> GetConfigAuthors(int limit, int skip = 0)
         {
             return  await _context.ConfigAuthors
                 .Skip(skip)
