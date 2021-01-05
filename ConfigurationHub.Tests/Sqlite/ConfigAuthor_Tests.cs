@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq;
 using Configuration.Data;
-using Configuration.Domain;
 using ConfigurationHub.Controllers;
+using ConfigurationHub.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Xunit;

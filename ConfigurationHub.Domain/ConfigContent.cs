@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace Configuration.Domain
+namespace ConfigurationHub.Domain
 {
     public class ConfigContent
     {

@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using System.Text.Json.Serialization;
 
-namespace Configuration.Domain
+namespace ConfigurationHub.Domain
 {
     public class ConfigAuthor
     {

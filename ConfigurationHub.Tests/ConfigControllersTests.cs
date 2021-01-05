@@ -1,6 +1,6 @@
 ﻿using System.Text.Json;
 using Configuration.Data;
-using Configuration.Domain;
+using ConfigurationHub.Domain;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConfigurationHub.Tests
@@ -33,7 +33,7 @@ namespace ConfigurationHub.Tests
                     Content = JsonSerializer.Serialize(new { Port = 200 })
                 };
 
-                var system = new Configuration.Domain.System()
+                var system = new Domain.System()
                 {
                     MicroserviceName = "ConfigurationHub"
                 };

@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace Configuration.Domain
+namespace ConfigurationHub.Domain
 {
     public class AuthorAndConfigs
     {

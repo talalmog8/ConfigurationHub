@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Text.Json;
 using Configuration.Data;
-using Configuration.Domain;
 using ConfigurationHub.Controllers;
+using ConfigurationHub.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -50,7 +50,7 @@ namespace ConfigurationHub.Tests.Sqlite
                 Content = JsonSerializer.Serialize(new { Port = 2000 })
             };
 
-            var system = new Configuration.Domain.System()
+            var system = new Domain.System()
             {
                 MicroserviceName = "SystemName"
             };

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Configuration.Domain
+namespace ConfigurationHub.Domain
 {
     public class Config
     {

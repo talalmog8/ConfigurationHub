@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Configuration.Data;
-using Configuration.Domain;
+using ConfigurationHub.Domain;
 
 namespace ConfigurationHub.Controllers
 {
