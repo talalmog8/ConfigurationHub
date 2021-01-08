@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Configuration.Data;
 using ConfigurationHub.Domain;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ConfigurationHub.Controllers
 {
