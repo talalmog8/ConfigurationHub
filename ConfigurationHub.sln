@@ -9,12 +9,14 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationHub.Data", "Co
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationHub.Domain", "ConfigurationHub.Domain\ConfigurationHub.Domain.csproj", "{3218CB36-52F3-4782-9E73-B36E96CDFC09}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationHub.Tests", "ConfigurationHub.Tests\ConfigurationHub.Tests.csproj", "{76CC087D-F562-4823-8E17-5E7FECBD0E2E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ConfigurationHub.Tests", "ConfigurationHub.Tests\ConfigurationHub.Tests.csproj", "{76CC087D-F562-4823-8E17-5E7FECBD0E2E}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4AD925EC-44FE-4DCE-8365-5C8397ADA2F1}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationHub.Core", "ConfigurationHub.Core\ConfigurationHub.Core.csproj", "{37FEB31C-17DE-41C6-AD08-674215A080A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -38,6 +40,10 @@ Global
 		{76CC087D-F562-4823-8E17-5E7FECBD0E2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{76CC087D-F562-4823-8E17-5E7FECBD0E2E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{76CC087D-F562-4823-8E17-5E7FECBD0E2E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{37FEB31C-17DE-41C6-AD08-674215A080A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{37FEB31C-17DE-41C6-AD08-674215A080A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{37FEB31C-17DE-41C6-AD08-674215A080A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{37FEB31C-17DE-41C6-AD08-674215A080A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
