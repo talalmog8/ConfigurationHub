@@ -25,6 +25,11 @@ namespace ConfigurationHub.Data.Repositories
             _context = context;
         }
 
+        ~UserService()
+        {
+            _context.Dispose();
+        }
+
         public User Authenticate(string username, string password)
         {
             User user;
@@ -51,9 +56,6 @@ namespace ConfigurationHub.Data.Repositories
 
         public User Create(User user, string password)
         {
-            if (string.IsNullOrWhiteSpace(password))
-                throw new ArgumentException("Password is required", nameof(password));
-
             if (_context.Users.Any(x => x.Username == user.Username))
                 throw new ArgumentException($"Username: {user.Username} already exists", nameof(user.Username));
 
@@ -73,41 +75,29 @@ namespace ConfigurationHub.Data.Repositories
             var user = _context.Users.Find(userParam.Id);
 
             if (user == null)
-                throw new Exception("User not found");
+                throw new InvalidOperationException("User not found");
 
-            // update username if it has changed
-            if (!string.IsNullOrWhiteSpace(userParam.Username) && userParam.Username != user.Username)
+            if (userParam.Username != user.Username)
             {
-                // throw error if the new username is already taken
                 if (_context.Users.Any(x => x.Username == userParam.Username))
-                    throw new Exception("Username " + userParam.Username + " is already taken");
-
-                user.Username = userParam.Username;
+                    throw new ArgumentException($"Username: {userParam.Username} is already taken");
             }
 
-            // update user properties if provided
-            if (!string.IsNullOrWhiteSpace(userParam.FirstName))
-                user.FirstName = userParam.FirstName;
+            if (string.IsNullOrWhiteSpace(password))
+                throw new ArgumentException("Password Is Invalid");
 
-            if (!string.IsNullOrWhiteSpace(userParam.LastName))
-                user.LastName = userParam.LastName;
+            CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
+            userParam.PasswordHash = passwordHash;
+            userParam.PasswordSalt = passwordSalt;
 
-            // update password if provided
-            if (!string.IsNullOrWhiteSpace(password))
-            {
-                CreatePasswordHash(password, out var passwordHash, out var passwordSalt);
-                user.PasswordHash = passwordHash;
-                user.PasswordSalt = passwordSalt;
-            }
-
-            _context.Users.Update(user);
+            _context.Users.Update(userParam);
             _context.SaveChanges();
         }
 
         public void Delete(int id)
         {
-            var user = _context.Users.Find(id);
-            if (user != null)
+            User user;
+            if ((user = _context.Users.Find(id)) != null)
             {
                 _context.Users.Remove(user);
                 _context.SaveChanges();
@@ -127,7 +117,7 @@ namespace ConfigurationHub.Data.Repositories
         {
             if (storedHash.Length != 64 || storedSalt.Length != 128)
                 return false;
-            
+
             using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
             {
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
