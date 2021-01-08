@@ -1,12 +1,14 @@
-﻿namespace ConfigurationHub.Domain.Auth
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace ConfigurationHub.Domain.Auth
 {
     public class User
     {
-        public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        public string Username { get; set; }
-        public byte[] PasswordHash { get; set; }
-        public byte[] PasswordSalt { get; set; }
+        [Required] public int Id { get; set; }
+        [Required] public string FirstName { get; set; }
+        [Required] public string LastName { get; set; }
+        [Required] public string Username { get; set; }
+        [Required] public byte[] PasswordHash { get; set; }
+        [Required] public byte[] PasswordSalt { get; set; }
     }
 }
