@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
-namespace ConfigurationHub.Tests.Sqlite
+namespace ConfigurationHub.Tests.ConfigTests.Sqlite
 {
     public class ConfigAuthor_Tests : ConfigControllersTests
     {
@@ -16,7 +16,6 @@ namespace ConfigurationHub.Tests.Sqlite
                 .UseSqlite($"Filename={nameof(ConfigAuthor_Tests)}.db")
                 .Options)
         {
-
         }
 
 

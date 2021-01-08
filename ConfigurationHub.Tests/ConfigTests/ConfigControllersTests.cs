@@ -3,7 +3,7 @@ using Configuration.Data;
 using ConfigurationHub.Domain;
 using Microsoft.EntityFrameworkCore;
 
-namespace ConfigurationHub.Tests
+namespace ConfigurationHub.Tests.ConfigTests
 {
     public class ConfigControllersTests
     {

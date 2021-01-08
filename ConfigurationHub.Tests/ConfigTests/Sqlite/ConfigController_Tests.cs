@@ -4,12 +4,11 @@ using System.Text.Json;
 using Configuration.Data;
 using ConfigurationHub.Controllers;
 using ConfigurationHub.Domain;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Xunit;
 
-namespace ConfigurationHub.Tests.Sqlite
+namespace ConfigurationHub.Tests.ConfigTests.Sqlite
 {
     public class ConfigController_Tests : ConfigControllersTests
     {
