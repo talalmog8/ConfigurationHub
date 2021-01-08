@@ -46,9 +46,13 @@ namespace ConfigurationHub.Controllers
                 });
 
             }
-            catch(Exception e)
+            catch(ArgumentException ex)
             {
-                return BadRequest(new {message = $"Couldn't Authenticate Because: {e.Message}"});
+                return BadRequest(new {message = $"Couldn't Authenticate Because: {ex.Message}", FaultedParameter = ex.ParamName });
+            }
+            catch (InvalidOperationException)
+            {
+                return BadRequest(new { message = "Couldn't Authenticate User, Received Invalid Data"});
             }
         }
 
@@ -63,7 +67,7 @@ namespace ConfigurationHub.Controllers
             }
             catch (ArgumentException ex)
             {
-                return BadRequest(new { message = ex.Message });
+                return BadRequest(new { message = ex.Message, FaultedParameter = ex.ParamName });
             }
         }
     }
