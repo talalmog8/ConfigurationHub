@@ -30,7 +30,8 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
                 {
                     FirstName = "firstName",
                     LastName = "lastName",
-                    Username = "username"
+                    Username = "username",
+                    Email = "email"
                 };
 
                 var actual = userService.Create(user, "test-password-1");
@@ -46,6 +47,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
                 Assert.Equal(user.Username, actual.Username);
                 Assert.Equal(user.FirstName, actual.FirstName);
                 Assert.Equal(user.LastName, actual.LastName);
+                Assert.Equal(user.Email, actual.Email);
             }
         }
 
@@ -60,7 +62,8 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
                 {
                     FirstName = "Tal_1",
                     LastName = "Almog_1",
-                    Username = "TalAlmog45_1"
+                    Username = "TalAlmog45_1",
+                    Email = "email"
                 };
 
                 Assert.Throws<ArgumentException>(() => userService.Create(user, "test-password-1000"));
@@ -79,7 +82,8 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
                 {
                     FirstName = "firstName",
                     LastName = "lastName",
-                    Username = "username"
+                    Username = "username",
+                    Email = "email"
                 };
 
                 var actual = userService.Create(user, "test-password-1");

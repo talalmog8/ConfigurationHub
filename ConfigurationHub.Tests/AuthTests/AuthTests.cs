@@ -32,7 +32,8 @@ namespace ConfigurationHub.Tests.AuthTests
                         {
                             FirstName = $"Tal_{x}",
                             LastName = $"Almog_{x}",
-                            Username = $"TalAlmog45_{x}"
+                            Username = $"TalAlmog45_{x}",
+                            Email = $"email_{x}"
                         };
 
                         using (var hmac = new System.Security.Cryptography.HMACSHA512())
