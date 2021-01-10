@@ -15,6 +15,7 @@ using ConfigurationHub.Core.Auth;
 using ConfigurationHub.Data;
 using ConfigurationHub.Data.Repositories;
 using ConfigurationHub.Domain.Auth;
+using ConfigurationHub.General;
 using ConfigurationHub.General.HelperModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
@@ -76,7 +77,8 @@ namespace ConfigurationHub
                             var userId = int.Parse(context.Principal.Identity.Name);
                             var user = userService.GetById(userId);
                             if (user == null)
-                                context.Fail("Unauthorized");
+                                context.Fail("Unauthorized"); 
+
                             return Task.CompletedTask;
                         }
                     };
@@ -91,15 +93,18 @@ namespace ConfigurationHub
                     };
                 });
 
-            var policy = new AuthorizationPolicyBuilder()
-                .RequireAuthenticatedUser()
-                .Build();
-
-            services.AddMvc(options =>
+            services.AddAuthorization(options =>
             {
-                options.Filters.Add(new AuthorizeFilter(policy));
+                {
+                    options.FallbackPolicy = new AuthorizationPolicyBuilder()
+                        .RequireAuthenticatedUser()
+                        .Build();
+                    options.AddPolicy("user", policy =>
+                        policy.Requirements.Add(new EmptyAuthRequirement()));
+                }
             });
 
+            services.AddSingleton<IAuthorizationHandler, AuthorizationToUserOnly>();
             services.AddScoped<IUserService, UserService>();
             services.AddScoped<IJwtTokenUtils, JwtTokenUtils>();
         }
