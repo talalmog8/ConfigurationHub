@@ -9,11 +9,12 @@ namespace ConfigurationHub.Data.Repositories
     public interface IUserService
     {
         User Authenticate(string username, string password);
-        IEnumerable<User> GetAll();
+        IEnumerable<User> GetUsers(int skip, int take);
         User GetById(int id);
         User Register(User user, string password);
         void Update(User user, string password = null);
         void Delete(int id);
+        long Count();
     }
 
     public class UserService : IUserService
@@ -44,9 +45,11 @@ namespace ConfigurationHub.Data.Repositories
             return user;
         }
 
-        public IEnumerable<User> GetAll()
+        public IEnumerable<User> GetUsers(int skip  = 0, int take = 5)
         {
-            return _context.Users;
+            return _context.Users
+                .Skip(skip)
+                .Take(take);
         }
 
         public User GetById(int id)
@@ -104,6 +107,11 @@ namespace ConfigurationHub.Data.Repositories
             }
         }
 
+        public long Count()
+        {
+            return _context.Users.LongCount();
+        }
+
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
             using (var hmac = new System.Security.Cryptography.HMACSHA512())
@@ -112,7 +120,6 @@ namespace ConfigurationHub.Data.Repositories
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
             }
         }
-
         private static bool VerifyPasswordHash(string password, byte[] storedHash, byte[] storedSalt)
         {
             if (storedHash.Length != 64 || storedSalt.Length != 128)
