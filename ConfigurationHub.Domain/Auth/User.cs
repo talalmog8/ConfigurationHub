@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 
 namespace ConfigurationHub.Domain.Auth
 {
@@ -9,7 +10,7 @@ namespace ConfigurationHub.Domain.Auth
         [Required] public string LastName { get; set; }
         [Required] public string Username { get; set; }
         [Required] public string Email { get; set; }
-        [Required] public byte[] PasswordHash { get; set; }
-        [Required] public byte[] PasswordSalt { get; set; }
+        [JsonIgnore] [Required] public byte[] PasswordHash { get; set; }
+        [JsonIgnore] [Required] public byte[] PasswordSalt { get; set; }
     }
 }
