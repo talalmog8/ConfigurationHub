@@ -62,7 +62,7 @@ namespace ConfigurationHub.Controllers
         {
             try
             {
-                _userService.Create(_mapper.Map<User>(model), model.Password);
+                _userService.Register(_mapper.Map<User>(model), model.Password);
                 return Ok();
             }
             catch (ArgumentException ex)

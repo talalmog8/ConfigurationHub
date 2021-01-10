@@ -11,7 +11,7 @@ namespace ConfigurationHub.Data.Repositories
         User Authenticate(string username, string password);
         IEnumerable<User> GetAll();
         User GetById(int id);
-        User Create(User user, string password);
+        User Register(User user, string password);
         void Update(User user, string password = null);
         void Delete(int id);
     }
@@ -54,7 +54,7 @@ namespace ConfigurationHub.Data.Repositories
             return _context.Users.Find(id);
         }
 
-        public User Create(User user, string password)
+        public User Register(User user, string password)
         {
             if (_context.Users.Any(x => x.Username == user.Username))
                 throw new ArgumentException($"Username: {user.Username} already exists", nameof(user.Username));

@@ -20,7 +20,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
         }
 
         [Fact]
-        public void CanCreateUser()
+        public void CanRegister()
         {
             using (var context = new UserContext(ContextOptions))
             {
@@ -34,7 +34,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
                     Email = "email"
                 };
 
-                var actual = userService.Create(user, "test-password-1");
+                var actual = userService.Register(user, "test-password-1");
 
                 using (var hmac = new System.Security.Cryptography.HMACSHA512())
                 {
@@ -52,6 +52,27 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
         }
 
         [Fact]
+        public void CanAuthenticate()
+        {
+            using (var context = new UserContext(ContextOptions))
+            {
+                var userService = new UserService(context);
+
+                var user = new User
+                {
+                    FirstName = "firstName",
+                    LastName = "lastName",
+                    Username = "username",
+                    Email = "email"
+                };
+
+                var expected = userService.Register(user, "test-password-1");
+                var actual = userService.Authenticate("username", "test-password-1");
+                Assert.Equal(expected.Id, actual.Id);
+            }
+        }
+
+            [Fact]
         public void UserNameUnique()
         {
             using (var context = new UserContext(ContextOptions))
@@ -66,10 +87,9 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
                     Email = "email"
                 };
 
-                Assert.Throws<ArgumentException>(() => userService.Create(user, "test-password-1000"));
+                Assert.Throws<ArgumentException>(() => userService.Register(user, "test-password-1000"));
             }
         }
-
 
         [Fact]
         public void CanDelete()
@@ -86,7 +106,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
                     Email = "email"
                 };
 
-                var actual = userService.Create(user, "test-password-1");
+                var actual = userService.Register(user, "test-password-1");
 
                 using (var hmac = new System.Security.Cryptography.HMACSHA512())
                 {
