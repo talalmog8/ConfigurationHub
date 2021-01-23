@@ -13,4 +13,8 @@
     <ProjectReference Include="..\ConfigurationHub.Domain\ConfigurationHub.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\User\" />
+  </ItemGroup>
+
 </Project>

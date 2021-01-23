@@ -3,7 +3,9 @@ using System.Linq;
 using System.Text.Json;
 using Configuration.Data;
 using ConfigurationHub.Controllers;
+using ConfigurationHub.Data.Repositories;
 using ConfigurationHub.Domain;
+using ConfigurationHub.Domain.Auth;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using Xunit;
@@ -27,9 +29,9 @@ namespace ConfigurationHub.Tests.ConfigTests.Sqlite
                 var controller = new ConfigsController(context);
 
                 var items = (await controller.GetConfigs()).Value.ToList();
-                
+
                 Assert.Equal("Tal", items[0].Author.FirstName);
-                Assert.Equal("ConfigurationHub", items[0].System.MicroserviceName);
+                Assert.Equal("ConfigurationHub", items[0].Microservice.Name);
                 Assert.Equal(200, JObject.Parse(items[0].ConfigContent.Content).GetValue("Port"));
                 Assert.Single(items);
             }
@@ -38,32 +40,37 @@ namespace ConfigurationHub.Tests.ConfigTests.Sqlite
         [Fact]
         public async void CanAddItem()
         {
-            var author = new ConfigAuthor()
+            var author = new User
             {
-                FirstName = "Yonatan",
-                LastName = "Cohen"
+                Email = ".com",
+                FirstName = "Tal",
+                LastName = "Almog",
+                Username = "abc"
+
             };
 
-            var content = new ConfigContent()
+            var content = new ConfigContent
             {
                 Content = JsonSerializer.Serialize(new { Port = 2000 })
             };
 
-            var system = new Domain.System()
+            var system = new Microservice
             {
-                MicroserviceName = "SystemName"
+                Name = "SystemName"
             };
 
-            var config = new Config()
+            var config = new Config
             {
                 ConfigContent = content,
                 Author = author,
-                System = system
+                Microservice = system
 
             };
 
             await using (var context = new ConfigurationContext(ContextOptions))
             {
+                author = new UserService(context).Register(author, "pass");
+
                 var controller = new ConfigsController(context);
 
                 await controller.PostConfig(config);
@@ -75,8 +82,8 @@ namespace ConfigurationHub.Tests.ConfigTests.Sqlite
 
                 var item = (await controller.GetConfigs()).Value.ToList()[1];
 
-                Assert.Equal("Yonatan", item.Author.FirstName);
-                Assert.Equal("SystemName", item.System.MicroserviceName);
+                Assert.Equal("Tal", item.Author.FirstName);
+                Assert.Equal("SystemName", item.Microservice.Name);
                 Assert.Equal(2000, JObject.Parse(item.ConfigContent.Content).GetValue("Port"));
             }
         }
@@ -126,4 +133,4 @@ namespace ConfigurationHub.Tests.ConfigTests.Sqlite
             }
         }
     }
-}   
+}

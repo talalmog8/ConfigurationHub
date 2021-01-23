@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using ConfigurationHub.Data;
+using Configuration.Data;
 using ConfigurationHub.Domain.Auth;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,9 +10,9 @@ namespace ConfigurationHub.Tests.AuthTests
 {
     public class AuthTests
     {
-        protected DbContextOptions<UserContext> ContextOptions { get; }
+        protected DbContextOptions<ConfigurationContext> ContextOptions { get; }
 
-        protected AuthTests(DbContextOptions<UserContext> contextOptions)
+        protected AuthTests(DbContextOptions<ConfigurationContext> contextOptions)
         {
             ContextOptions = contextOptions;
             Seed();
@@ -19,7 +20,7 @@ namespace ConfigurationHub.Tests.AuthTests
 
         private void Seed()
         {
-            using (var context = new UserContext(ContextOptions))
+            using (var context = new ConfigurationContext(ContextOptions))
             {
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
@@ -36,7 +37,7 @@ namespace ConfigurationHub.Tests.AuthTests
                             Email = $"email_{x}"
                         };
 
-                        using (var hmac = new System.Security.Cryptography.HMACSHA512())
+                        using (var hmac = new HMACSHA512())
                         {
                             user.PasswordSalt = hmac.Key;
                             user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("test-password"));

@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using AutoMapper;
 using ConfigurationHub.Core.Auth;
 using ConfigurationHub.Data.Repositories;

@@ -1,12 +1,10 @@
-﻿using System;
-using System.Linq;
-using System.Security.Claims;
+﻿using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using ConfigurationHub.Data;
+using Configuration.Data;
 using ConfigurationHub.Domain.Auth;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConfigurationHub.Controllers
 {
@@ -14,9 +12,9 @@ namespace ConfigurationHub.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
-        private readonly UserContext _context;
+        private readonly ConfigurationContext _context;
 
-        public UsersController(UserContext context)
+        public UsersController(ConfigurationContext context)
         {
             _context = context;
         }
@@ -57,10 +55,8 @@ namespace ConfigurationHub.Controllers
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return NoContent();

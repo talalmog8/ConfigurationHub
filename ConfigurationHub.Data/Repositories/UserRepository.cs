@@ -1,8 +1,10 @@
-﻿using ConfigurationHub.Domain.Auth;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
+using Configuration.Data;
+using ConfigurationHub.Domain.Auth;
 
 namespace ConfigurationHub.Data.Repositories
 {
@@ -19,9 +21,9 @@ namespace ConfigurationHub.Data.Repositories
 
     public class UserService : IUserService
     {
-        private readonly UserContext _context;
+        private readonly ConfigurationContext _context;
 
-        public UserService(UserContext context)
+        public UserService(ConfigurationContext context)
         {
             _context = context;
         }
@@ -114,7 +116,7 @@ namespace ConfigurationHub.Data.Repositories
 
         private static void CreatePasswordHash(string password, out byte[] passwordHash, out byte[] passwordSalt)
         {
-            using (var hmac = new System.Security.Cryptography.HMACSHA512())
+            using (var hmac = new HMACSHA512())
             {
                 passwordSalt = hmac.Key;
                 passwordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
@@ -125,7 +127,7 @@ namespace ConfigurationHub.Data.Repositories
             if (storedHash.Length != 64 || storedSalt.Length != 128)
                 return false;
 
-            using (var hmac = new System.Security.Cryptography.HMACSHA512(storedSalt))
+            using (var hmac = new HMACSHA512(storedSalt))
             {
                 var computedHash = hmac.ComputeHash(Encoding.UTF8.GetBytes(password));
                 if (computedHash.Where((t, i) => t != storedHash[i]).Any())

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Text.Json.Serialization;
+using ConfigurationHub.Domain.Auth;
 
 namespace ConfigurationHub.Domain
 {
@@ -9,11 +10,11 @@ namespace ConfigurationHub.Domain
         {
             Configs = new List<Config>();
         }
-        
+
         public int Id { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
-        
+        public User User { get; set; }
+        public int UserId { get; set; }
+
         [JsonIgnore]
         public List<Config> Configs { get; set; }
     }

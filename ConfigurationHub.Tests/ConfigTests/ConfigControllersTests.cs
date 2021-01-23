@@ -1,6 +1,8 @@
 ﻿using System.Text.Json;
 using Configuration.Data;
+using ConfigurationHub.Data.Repositories;
 using ConfigurationHub.Domain;
+using ConfigurationHub.Domain.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConfigurationHub.Tests.ConfigTests
@@ -22,27 +24,31 @@ namespace ConfigurationHub.Tests.ConfigTests
                 context.Database.EnsureDeleted();
                 context.Database.EnsureCreated();
 
-                var author = new ConfigAuthor()
+                var author = new User
                 {
                     FirstName = "Tal",
-                    LastName = "Almog"
+                    LastName = "Almog",
+                    Email = "abc",
+                    Username = "tal"
                 };
+
+                author = new UserService(context).Register(author, "test-password");
                 
-                var content = new ConfigContent()
+                var content = new ConfigContent
                 {
                     Content = JsonSerializer.Serialize(new { Port = 200 })
                 };
 
-                var system = new Domain.System()
+                var system = new Microservice
                 {
-                    MicroserviceName = "ConfigurationHub"
+                    Name = "ConfigurationHub"
                 };
 
-                var config = new Config()
+                var config = new Config
                 {
                     ConfigContent = content,
                     Author = author,
-                    System = system
+                    Microservice = system
 
                 };
 

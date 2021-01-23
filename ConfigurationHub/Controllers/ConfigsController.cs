@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using Configuration.Data;
 using ConfigurationHub.Domain;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConfigurationHub.Controllers
 {
@@ -33,7 +30,7 @@ namespace ConfigurationHub.Controllers
             return await _context.Configs
                 .Include(x => x.Author)
                 .Include(y => y.ConfigContent)
-                .Include(t => t.System)
+                .Include(t => t.Microservice)
                 .OrderBy(t => t.LastModified)
                 .ToListAsync();
         }
@@ -45,8 +42,8 @@ namespace ConfigurationHub.Controllers
             var config = await _context.Configs
                 .Include(x => x.Author)
                 .Include(y => y.ConfigContent)
-                .Include(t => t.System)
-                .FirstAsync((c) => c.Id == id);
+                .Include(t => t.Microservice)
+                .FirstAsync(c => c.Id == id);
 
             if (config == null)
             {
@@ -58,7 +55,7 @@ namespace ConfigurationHub.Controllers
 
         // PUT: api/Configs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
+        [HttpPut("{id}")] [Authorize(policy: "user")]
         public async Task<IActionResult> PutConfig(int id, Config config)
         {
             if (id != config.Id)
@@ -78,10 +75,8 @@ namespace ConfigurationHub.Controllers
                 {
                     return NotFound();
                 }
-                else
-                {
-                    throw;
-                }
+
+                throw;
             }
 
             return NoContent();

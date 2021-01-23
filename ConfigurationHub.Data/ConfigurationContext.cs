@@ -1,4 +1,5 @@
 ﻿using ConfigurationHub.Domain;
+using ConfigurationHub.Domain.Auth;
 using Microsoft.EntityFrameworkCore;
 
 namespace Configuration.Data
@@ -11,9 +12,9 @@ namespace Configuration.Data
         }
         
         public DbSet<Config> Configs { get; set; }
-        public DbSet<ConfigAuthor> ConfigAuthors { get; set; }
         public DbSet<ConfigContent> ConfigContents { get; set; }
-        public DbSet<ConfigurationHub.Domain.System> ConfigSystems { get; set; }
+        public DbSet<Microservice> ConfigSystems { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -23,17 +24,18 @@ namespace Configuration.Data
                 entity.Property(c => c.LastModified).IsRequired();
             });
 
-            builder.Entity<ConfigAuthor>(entity =>
+            builder.Entity<Microservice>(entity =>
             {
-                entity.HasIndex(a => new { a.FirstName, a.LastName });
-                entity.Property(a => a.FirstName).IsRequired();
-                entity.Property(a => a.LastName).IsRequired();
+                entity.HasIndex(s => s.Name);
+                entity.Property(s => s.Name).IsRequired();               
             });
 
-            builder.Entity<ConfigurationHub.Domain.System>(entity =>
+            builder.Entity<User>(e =>
             {
-                entity.HasIndex(s => s.MicroserviceName);
-                entity.Property(s => s.MicroserviceName).IsRequired();               
+                e.HasKey(x => x.Id);
+                e.Property(x => x.Username).IsRequired();
+                e.HasIndex(x => x.Username);
+                e.HasAlternateKey(t => t.Username);
             });
         }
     }

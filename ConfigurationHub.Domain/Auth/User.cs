@@ -10,7 +10,7 @@ namespace ConfigurationHub.Domain.Auth
         [Required] public string LastName { get; set; }
         [Required] public string Username { get; set; }
         [Required] public string Email { get; set; }
-        [JsonIgnore] [Required] public byte[] PasswordHash { get; set; }
-        [JsonIgnore] [Required] public byte[] PasswordSalt { get; set; }
+        [JsonIgnore] public byte[] PasswordHash { get; set; }
+        [JsonIgnore] public byte[] PasswordSalt { get; set; }
     }
 }

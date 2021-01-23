@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace ConfigurationHub.Data.Migrations
 {
     [DbContext(typeof(ConfigurationContext))]
-    [Migration("20201225180625_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20210116102543_Users")]
+    partial class Users
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -18,7 +18,46 @@ namespace ConfigurationHub.Data.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.1");
 
-            modelBuilder.Entity("Configuration.Domain.Config", b =>
+            modelBuilder.Entity("ConfigurationHub.Domain.Auth.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<byte[]>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<byte[]>("PasswordSalt")
+                        .IsRequired()
+                        .HasColumnType("BLOB");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasAlternateKey("Username");
+
+                    b.HasIndex("Username");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ConfigurationHub.Domain.Config", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -37,29 +76,14 @@ namespace ConfigurationHub.Data.Migrations
 
                     b.HasIndex("AuthorId");
 
+                    b.HasIndex("LastModified");
+
                     b.HasIndex("SystemId");
 
                     b.ToTable("Configs");
                 });
 
-            modelBuilder.Entity("Configuration.Domain.ConfigAuthor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
-
-                    b.Property<string>("FirstName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("TEXT");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ConfigAuthors");
-                });
-
-            modelBuilder.Entity("Configuration.Domain.ConfigContent", b =>
+            modelBuilder.Entity("ConfigurationHub.Domain.ConfigContent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -79,27 +103,30 @@ namespace ConfigurationHub.Data.Migrations
                     b.ToTable("ConfigContents");
                 });
 
-            modelBuilder.Entity("Configuration.Domain.System", b =>
+            modelBuilder.Entity("ConfigurationHub.Domain.System", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("MicroserviceName")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MicroserviceName");
+
                     b.ToTable("ConfigSystems");
                 });
 
-            modelBuilder.Entity("Configuration.Domain.Config", b =>
+            modelBuilder.Entity("ConfigurationHub.Domain.Config", b =>
                 {
-                    b.HasOne("Configuration.Domain.ConfigAuthor", "Author")
-                        .WithMany("Configs")
+                    b.HasOne("ConfigurationHub.Domain.Auth.User", "Author")
+                        .WithMany()
                         .HasForeignKey("AuthorId");
 
-                    b.HasOne("Configuration.Domain.System", "System")
+                    b.HasOne("ConfigurationHub.Domain.System", "System")
                         .WithMany("Configs")
                         .HasForeignKey("SystemId");
 
@@ -108,28 +135,23 @@ namespace ConfigurationHub.Data.Migrations
                     b.Navigation("System");
                 });
 
-            modelBuilder.Entity("Configuration.Domain.ConfigContent", b =>
+            modelBuilder.Entity("ConfigurationHub.Domain.ConfigContent", b =>
                 {
-                    b.HasOne("Configuration.Domain.Config", "Config")
+                    b.HasOne("ConfigurationHub.Domain.Config", "Config")
                         .WithOne("ConfigContent")
-                        .HasForeignKey("Configuration.Domain.ConfigContent", "ConfigId")
+                        .HasForeignKey("ConfigurationHub.Domain.ConfigContent", "ConfigId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Config");
                 });
 
-            modelBuilder.Entity("Configuration.Domain.Config", b =>
+            modelBuilder.Entity("ConfigurationHub.Domain.Config", b =>
                 {
                     b.Navigation("ConfigContent");
                 });
 
-            modelBuilder.Entity("Configuration.Domain.ConfigAuthor", b =>
-                {
-                    b.Navigation("Configs");
-                });
-
-            modelBuilder.Entity("Configuration.Domain.System", b =>
+            modelBuilder.Entity("ConfigurationHub.Domain.System", b =>
                 {
                     b.Navigation("Configs");
                 });

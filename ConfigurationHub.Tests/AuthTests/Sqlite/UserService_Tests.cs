@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
-using ConfigurationHub.Data;
+using Configuration.Data;
 using ConfigurationHub.Data.Repositories;
 using ConfigurationHub.Domain.Auth;
-using ConfigurationHub.Tests.ConfigTests.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -12,7 +12,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
 {
     public class UserService_Tests : AuthTests
     {
-        public UserService_Tests() : base(new DbContextOptionsBuilder<UserContext>()
+        public UserService_Tests() : base(new DbContextOptionsBuilder<ConfigurationContext>()
         .UseSqlite($"Filename={nameof(UserService_Tests)}.db")
             .Options)
         {
@@ -22,7 +22,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
         [Fact]
         public void CanRegister()
         {
-            using (var context = new UserContext(ContextOptions))
+            using (var context = new ConfigurationContext(ContextOptions))
             {
                 var userService = new UserService(context);
 
@@ -36,7 +36,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
 
                 var actual = userService.Register(user, "test-password-1");
 
-                using (var hmac = new System.Security.Cryptography.HMACSHA512())
+                using (var hmac = new HMACSHA512())
                 {
                     user.PasswordSalt = hmac.Key;
                     user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("test-password-1"));
@@ -54,7 +54,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
         [Fact]
         public void CanAuthenticate()
         {
-            using (var context = new UserContext(ContextOptions))
+            using (var context = new ConfigurationContext(ContextOptions))
             {
                 var userService = new UserService(context);
 
@@ -75,7 +75,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
             [Fact]
         public void UserNameUnique()
         {
-            using (var context = new UserContext(ContextOptions))
+            using (var context = new ConfigurationContext(ContextOptions))
             {
                 var userService = new UserService(context);
                 
@@ -94,7 +94,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
         [Fact]
         public void CanDelete()
         {
-            using (var context = new UserContext(ContextOptions))
+            using (var context = new ConfigurationContext(ContextOptions))
             {
                 var userService = new UserService(context);
 
@@ -108,7 +108,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
 
                 var actual = userService.Register(user, "test-password-1");
 
-                using (var hmac = new System.Security.Cryptography.HMACSHA512())
+                using (var hmac = new HMACSHA512())
                 {
                     user.PasswordSalt = hmac.Key;
                     user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("test-password-1"));
@@ -122,7 +122,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
         [Fact]
         public void CanUpdate()
         {
-            using (var context = new UserContext(ContextOptions))
+            using (var context = new ConfigurationContext(ContextOptions))
             {
                 var userService = new UserService(context);
 
@@ -133,7 +133,7 @@ namespace ConfigurationHub.Tests.AuthTests.Sqlite
 
                 userService.Update(user, "new-password");
                 
-                using (var hmac = new System.Security.Cryptography.HMACSHA512())
+                using (var hmac = new HMACSHA512())
                 {
                     user.PasswordSalt = hmac.Key;
                     user.PasswordHash = hmac.ComputeHash(Encoding.UTF8.GetBytes("new-password"));
