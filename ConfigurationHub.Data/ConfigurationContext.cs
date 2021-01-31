@@ -13,7 +13,9 @@ namespace Configuration.Data
         
         public DbSet<Config> Configs { get; set; }
         public DbSet<ConfigContent> ConfigContents { get; set; }
-        public DbSet<Microservice> ConfigSystems { get; set; }
+        public DbSet<Microservice> MicroServices { get; set; }
+        public DbSet<ConfigurationHub.Domain.System> Systems { get; set; }
+
         public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
@@ -28,6 +30,12 @@ namespace Configuration.Data
             {
                 entity.HasIndex(s => s.Name);
                 entity.Property(s => s.Name).IsRequired();               
+            });
+
+            builder.Entity<ConfigurationHub.Domain.System>(entity =>
+            {
+                entity.HasIndex(s => s.Name);
+                entity.Property(s => s.Name).IsRequired();
             });
 
             builder.Entity<User>(e =>

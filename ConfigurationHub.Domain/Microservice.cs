@@ -8,6 +8,10 @@ namespace ConfigurationHub.Domain
         public int Id { get; set;}
         public string Name { get; set; }
 
+        public System System { get; set; }
+        public int SystemId { get; set; }
+
+
         [JsonIgnore]
         public List<Config> Configs { get; set; }
     }
