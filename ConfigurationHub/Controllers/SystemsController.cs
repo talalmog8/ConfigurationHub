@@ -43,5 +43,22 @@ namespace ConfigurationHub.Controllers
 
             return system;
         }
+
+        // DELETE: api/Systems/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteSystem(int id)
+        {
+            var system = await _context.Systems.FindAsync(id);
+
+            if (system == null)
+            {
+                return NotFound();
+            }
+
+            _context.Systems.Remove(system);
+            await _context.SaveChangesAsync();
+
+            return NoContent();
+        }
     }
 }
