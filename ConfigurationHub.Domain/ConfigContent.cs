@@ -7,8 +7,7 @@ namespace ConfigurationHub.Domain
         public int Id { get; set; }
         public string Content { get; set; }
         
-        [JsonIgnore]
-        public Config Config { get; set; }
+        [JsonIgnore] public Config Config { get; set; }
         public int ConfigId { get; set; }
     }
 }

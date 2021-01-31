@@ -12,7 +12,6 @@ namespace ConfigurationHub.Domain
         public int SystemId { get; set; }
 
 
-        [JsonIgnore]
-        public List<Config> Configs { get; set; }
+        [JsonIgnore] public List<Config> Configs { get; set; }
     }
 }

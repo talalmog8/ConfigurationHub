@@ -1,15 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
 namespace ConfigurationHub.Domain.Auth
 {
     public class User
     {
-        [Required] public int Id { get; set; }
-        [Required] public string FirstName { get; set; }
-        [Required] public string LastName { get; set; }
-        [Required] public string Username { get; set; }
-        [Required] public string Email { get; set; }
+        public User()
+        {
+            Configs = new List<Config>();
+        }
+
+        public int Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Username { get; set; }
+        public string Email { get; set; }
+
+        [JsonIgnore] public List<Config> Configs { get; set; }
+
         [JsonIgnore] public byte[] PasswordHash { get; set; }
         [JsonIgnore] public byte[] PasswordSalt { get; set; }
     }

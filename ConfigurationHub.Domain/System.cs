@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ConfigurationHub.Domain
 {
@@ -11,6 +12,6 @@ namespace ConfigurationHub.Domain
 
         public int Id { get; set; }
         public string Name { get; set; }
-        public List<Microservice> Microservices { get; set; }
+        [JsonIgnore] public List<Microservice> Microservices { get; set; }
     }
 }

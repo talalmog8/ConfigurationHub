@@ -3,14 +3,16 @@ using System;
 using Configuration.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ConfigurationHub.Data.Migrations
 {
     [DbContext(typeof(ConfigurationContext))]
-    partial class ConfigurationContextModelSnapshot : ModelSnapshot
+    [Migration("20210131192835_index")]
+    partial class index
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -137,7 +139,7 @@ namespace ConfigurationHub.Data.Migrations
             modelBuilder.Entity("ConfigurationHub.Domain.Config", b =>
                 {
                     b.HasOne("ConfigurationHub.Domain.Auth.User", "Author")
-                        .WithMany("Configs")
+                        .WithMany()
                         .HasForeignKey("AuthorId");
 
                     b.HasOne("ConfigurationHub.Domain.Microservice", "Microservice")
@@ -169,11 +171,6 @@ namespace ConfigurationHub.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("System");
-                });
-
-            modelBuilder.Entity("ConfigurationHub.Domain.Auth.User", b =>
-                {
-                    b.Navigation("Configs");
                 });
 
             modelBuilder.Entity("ConfigurationHub.Domain.Config", b =>

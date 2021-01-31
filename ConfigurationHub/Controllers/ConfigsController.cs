@@ -55,7 +55,8 @@ namespace ConfigurationHub.Controllers
 
         // PUT: api/Configs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")] [Authorize(policy: "user")]
+        [HttpPut("{id}")]
+        [Authorize(policy: "user")]
         public async Task<IActionResult> PutConfig(int id, Config config)
         {
             if (id != config.Id)
@@ -87,7 +88,11 @@ namespace ConfigurationHub.Controllers
         [HttpPost]
         public async Task<ActionResult<Config>> PostConfig(Config config)
         {
-            _context.Configs.Add(config);
+            var author = await _context.Users.Include(y => y.Configs).FirstAsync(
+                x => x.Id.Equals(int.Parse(HttpContext.User.Identity.Name)));
+
+            author.Configs.Add(config);
+            _context.Users.Update(author);
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetConfig", new { id = config.Id }, config);

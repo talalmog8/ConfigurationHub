@@ -42,8 +42,7 @@ namespace Configuration.Data
             {
                 e.HasKey(x => x.Id);
                 e.Property(x => x.Username).IsRequired();
-                e.HasIndex(x => x.Username);
-                e.HasAlternateKey(t => t.Username);
+                e.HasIndex(x => x.Username).IsUnique(true);
             });
         }
     }
