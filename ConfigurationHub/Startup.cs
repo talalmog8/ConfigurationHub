@@ -5,7 +5,7 @@ using AutoMapper;
 using Configuration.Data;
 using ConfigurationHub.Core.Auth;
 using ConfigurationHub.Data.Repositories;
-using ConfigurationHub.Domain.Auth;
+using ConfigurationHub.Domain;
 using ConfigurationHub.General;
 using ConfigurationHub.General.HelperModels;
 using Microsoft.AspNetCore.Authentication.JwtBearer;

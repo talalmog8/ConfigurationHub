@@ -1,10 +1,11 @@
 ﻿using AutoMapper;
+using ConfigurationHub.Domain.Auth;
 using ConfigurationHub.Domain.ConfigModels;
 using ConfigurationHub.Domain.ConfigModels.Content;
 using ConfigurationHub.Domain.ConfigModels.MicroserviceModels;
 using ConfigurationHub.Domain.ConfigModels.SystemModels;
 
-namespace ConfigurationHub.Domain.Auth
+namespace ConfigurationHub.Domain
 {
     public class AutoMapperProfile : Profile
     {
