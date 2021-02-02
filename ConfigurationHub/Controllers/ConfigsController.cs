@@ -31,18 +31,18 @@ namespace ConfigurationHub.Controllers
 
         // GET: api/Configs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SavedConfigDto>>> GetConfigs()
+        public async Task<ActionResult<IEnumerable<SavedConfigDto>>> GetConfigs(int skip, int take)
         {
-            var result = await _context.Configs
+            return await _context.Configs
                 .Include(x => x.Author)
                 .Include(y => y.ConfigContent)
                 .Include(t => t.Microservice)
                 .ThenInclude(t => t.System)
                 .OrderByDescending(o => o.LastModified)
+                .Skip(skip)
+                .Take(take)
                 .Select(u => _mapper.Map<SavedConfigDto>(u))
                 .ToListAsync();
-
-            return result;
         }
 
         // GET: api/Configs/5
@@ -122,6 +122,7 @@ namespace ConfigurationHub.Controllers
         public async Task<IActionResult> DeleteConfig(int id)
         {
             var config = await _context.Configs.FindAsync(id);
+
             if (config == null)
             {
                 return NotFound();
