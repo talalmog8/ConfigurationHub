@@ -93,6 +93,11 @@ namespace ConfigurationHub.Controllers
                 return NotFound();
             }
 
+            if (_context.Configs.Any(c => c.Microservice.Id.Equals(id)))
+            {
+                return BadRequest("There is a child configuration of this microservice");
+            }
+
             _context.MicroServices.Remove(microservice);
             await _context.SaveChangesAsync();
 

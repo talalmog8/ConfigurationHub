@@ -55,6 +55,11 @@ namespace ConfigurationHub.Controllers
                 return NotFound();
             }
 
+            if (_context.Configs.Any(c => c.Microservice.System.Id.Equals(id)))
+            {
+                return BadRequest("There is a child configuration of this system");
+            }
+
             _context.Systems.Remove(system);
             await _context.SaveChangesAsync();
 
