@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConfigurationHub.Domain.ConfigModels.MicroserviceModels
 {
+    [Index(nameof(Name), IsUnique = true)]
     public class Microservice
     {
         [Required] public int Id { get; set;}

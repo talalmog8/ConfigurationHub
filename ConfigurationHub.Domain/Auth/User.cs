@@ -2,9 +2,11 @@
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 using ConfigurationHub.Domain.ConfigModels;
+using Microsoft.EntityFrameworkCore;
 
 namespace ConfigurationHub.Domain.Auth
 {
+    [Index(nameof(Username), nameof(Email), IsUnique = true)]
     public class User
     {
         public User()
@@ -13,8 +15,8 @@ namespace ConfigurationHub.Domain.Auth
         }
 
         [Key] public int Id { get; set; } 
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        [Required] public string FirstName { get; set; }
+        [Required] public string LastName { get; set; }
         [Required] public string Username { get; set; }
         [EmailAddress] public string Email { get; set; }
 
