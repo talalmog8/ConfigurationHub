@@ -12,11 +12,11 @@ namespace ConfigurationHub.Domain.Auth
             Configs = new List<Config>();
         }
 
-        public int Id { get; set; }
+        [Key] public int Id { get; set; } 
         public string FirstName { get; set; }
         public string LastName { get; set; }
-        public string Username { get; set; }
-        public string Email { get; set; }
+        [Required] public string Username { get; set; }
+        [EmailAddress] public string Email { get; set; }
 
         [JsonIgnore] public List<Config> Configs { get; set; }
 
