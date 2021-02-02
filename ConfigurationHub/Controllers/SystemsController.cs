@@ -2,11 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Configuration.Data;
 using ConfigurationHub.Domain;
+using ConfigurationHub.Domain.ConfigModels.SystemModels;
 
 namespace ConfigurationHub.Controllers
 {
@@ -15,10 +17,12 @@ namespace ConfigurationHub.Controllers
     public class SystemsController : ControllerBase
     {
         private readonly ConfigurationContext _context;
+        private readonly IMapper _mapper;
 
-        public SystemsController(ConfigurationContext context)
+        public SystemsController(ConfigurationContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Systems
@@ -42,6 +46,19 @@ namespace ConfigurationHub.Controllers
             }
 
             return system;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<SavedSystemDto>> PostMicroservice(NewSystemDto systemDto)
+        {
+            var system = _mapper.Map<Domain.ConfigModels.SystemModels.System>(systemDto);
+
+            _context.Systems.Add(system);
+            await _context.SaveChangesAsync();
+
+            var savedSystem = _mapper.Map<SavedSystemDto>(await _context.Systems.FirstAsync(c => c.Id.Equals(system.Id)));
+
+            return CreatedAtAction("GetSystem", new { id = savedSystem.Id }, savedSystem);
         }
 
         // DELETE: api/Systems/5

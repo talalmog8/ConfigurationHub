@@ -82,12 +82,17 @@ namespace ConfigurationHub.Controllers
         // POST: api/Microservices
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Microservice>> PostMicroservice(Microservice microservice)
+        public async Task<ActionResult<SavedMicroServiceDto>> PostMicroservice(NewMicroServiceDto microserviceDto)
         {
-            _context.MicroServices.Add(microservice);
+            var microservice = _mapper.Map<Microservice>(microserviceDto);
+
+            _context.MicroServices.Attach(microservice);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetMicroservice", new { id = microservice.Id }, microservice);
+            var savedMicroservice = _mapper.Map<SavedMicroServiceDto>(await _context.MicroServices.Include(c => c.System)
+                .FirstAsync(c => c.Id.Equals(microservice.Id)));
+
+            return CreatedAtAction("GetMicroservice", new { id = savedMicroservice.Id }, savedMicroservice);
         }
 
         // DELETE: api/Microservices/5
