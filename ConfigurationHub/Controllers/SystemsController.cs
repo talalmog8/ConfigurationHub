@@ -27,9 +27,14 @@ namespace ConfigurationHub.Controllers
 
         // GET: api/Systems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Domain.ConfigModels.SystemModels.System>>> GetSystems()
+        public async Task<ActionResult<IEnumerable<SystemWithMicroservicesDto>>> GetSystems(int skip, int take)
         {
-            return await _context.Systems.ToListAsync();
+            return await _context.Systems
+                .Skip(skip)
+                .Take(take)
+                .Include(s => s.Microservices)
+                .Select(c => _mapper.Map<SystemWithMicroservicesDto>(c))
+                .ToListAsync();
         }
 
         // GET: api/Systems/5
