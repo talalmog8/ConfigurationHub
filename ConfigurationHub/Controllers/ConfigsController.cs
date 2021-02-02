@@ -64,9 +64,25 @@ namespace ConfigurationHub.Controllers
             return _mapper.Map<SavedConfigDto>(config);
         }
 
+        [HttpGet("user/{username}")]
+        public async Task<ActionResult<IEnumerable<SavedConfigDto>>> GetConfigByUser(string username, int skip, int take)
+        {
+            return await _context.Users
+                .Where(c => c.Username.Equals(username))
+                .SelectMany(c => c.Configs)
+                .Skip(skip)
+                .Take(take)
+                .Include(c => c.ConfigContent)
+                .Include(c => c.Microservice)
+                .ThenInclude(c => c.System)
+                .Select(c => _mapper.Map<SavedConfigDto>(c))
+                .ToListAsync();
+        }
+
         // PUT: api/Configs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")] [Authorize(policy: "user")]
+        [HttpPut("{id}")]
+        [Authorize(policy: "user")]
         public async Task<IActionResult> PutConfig(int id, Config config)
         {
             if (id != config.Id)
@@ -99,15 +115,15 @@ namespace ConfigurationHub.Controllers
         public async Task<ActionResult<SavedConfigDto>> PostConfig(NewConfigDto configDto)
         {
             var config = _mapper.Map<Config>(configDto);
-            
+
             config.Author = new User
             {
                 Id = int.Parse(HttpContext.User.Identity.Name)
             };
-            
+
             _context.Configs.Attach(config);
             await _context.SaveChangesAsync();
-            
+
             SavedConfigDto result = _mapper.Map<SavedConfigDto>(await _context.Configs
                 .Include(o => o.ConfigContent)
                 .Include(u => u.Microservice)
@@ -118,7 +134,8 @@ namespace ConfigurationHub.Controllers
         }
 
         // DELETE: api/Configs/5
-        [HttpDelete("{id}")] [Authorize(policy: "user")]
+        [HttpDelete("{id}")]
+        [Authorize(policy: "user")]
         public async Task<IActionResult> DeleteConfig(int id)
         {
             var config = await _context.Configs.FindAsync(id);
