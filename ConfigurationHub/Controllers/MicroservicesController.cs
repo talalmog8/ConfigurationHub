@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Configuration.Data;
 using ConfigurationHub.Domain;
+using ConfigurationHub.Domain.ConfigModels.MicroserviceModels;
 
 namespace ConfigurationHub.Controllers
 {

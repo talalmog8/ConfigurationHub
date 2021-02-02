@@ -23,14 +23,14 @@ namespace ConfigurationHub.Controllers
 
         // GET: api/Systems
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Domain.System>>> GetSystems()
+        public async Task<ActionResult<IEnumerable<Domain.ConfigModels.SystemModels.System>>> GetSystems()
         {
             return await _context.Systems.ToListAsync();
         }
 
         // GET: api/Systems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Domain.System>> GetSystem(int id)
+        public async Task<ActionResult<Domain.ConfigModels.SystemModels.System>> GetSystem(int id)
         {
             var system = await _context.Systems
                 .Include(t => t.Microservices)

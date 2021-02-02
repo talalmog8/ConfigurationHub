@@ -3,6 +3,7 @@ using Configuration.Data;
 using ConfigurationHub.Data.Repositories;
 using ConfigurationHub.Domain;
 using ConfigurationHub.Domain.Auth;
+using ConfigurationHub.Domain.ConfigModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConfigurationHub.Tests.ConfigTests
