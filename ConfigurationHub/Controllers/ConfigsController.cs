@@ -1,8 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using AutoMapper;
 using Configuration.Data;
 using ConfigurationHub.Domain;
+using ConfigurationHub.Domain.Auth;
+using ConfigurationHub.Domain.ConfigModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -17,46 +21,52 @@ namespace ConfigurationHub.Controllers
     public class ConfigsController : ControllerBase
     {
         private readonly ConfigurationContext _context;
+        private readonly IMapper _mapper;
 
-        public ConfigsController(ConfigurationContext context)
+        public ConfigsController(ConfigurationContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Configs
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Config>>> GetConfigs()
+        public async Task<ActionResult<IEnumerable<SavedConfigDto>>> GetConfigs()
         {
-            return await _context.Configs
+            var result = await _context.Configs
                 .Include(x => x.Author)
                 .Include(y => y.ConfigContent)
                 .Include(t => t.Microservice)
-                .OrderBy(t => t.LastModified)
+                .ThenInclude(t => t.System)
+                .OrderByDescending(o => o.LastModified)
+                .Select(u => _mapper.Map<SavedConfigDto>(u))
                 .ToListAsync();
+
+            return result;
         }
 
         // GET: api/Configs/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Config>> GetConfig(int id)
+        public async Task<ActionResult<SavedConfigDto>> GetConfig(int id)
         {
             var config = await _context.Configs
                 .Include(x => x.Author)
                 .Include(y => y.ConfigContent)
                 .Include(t => t.Microservice)
-                .FirstAsync(c => c.Id == id);
+                .ThenInclude(t => t.System)
+                .FirstOrDefaultAsync(c => c.Id == id);
 
             if (config == null)
             {
                 return NotFound();
             }
 
-            return config;
+            return _mapper.Map<SavedConfigDto>(config);
         }
 
         // PUT: api/Configs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        [Authorize(policy: "user")]
+        [HttpPut("{id}")] [Authorize(policy: "user")]
         public async Task<IActionResult> PutConfig(int id, Config config)
         {
             if (id != config.Id)
@@ -64,7 +74,7 @@ namespace ConfigurationHub.Controllers
                 return BadRequest();
             }
 
-            _context.Entry(config).State = EntityState.Modified;
+            _context.Attach(config);
 
             try
             {
@@ -86,20 +96,29 @@ namespace ConfigurationHub.Controllers
         // POST: api/Configs
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Config>> PostConfig(Config config)
+        public async Task<ActionResult<SavedConfigDto>> PostConfig(NewConfigDto configDto)
         {
-            var author = await _context.Users.Include(y => y.Configs).FirstAsync(
-                x => x.Id.Equals(int.Parse(HttpContext.User.Identity.Name)));
-
-            author.Configs.Add(config);
-            _context.Users.Update(author);
+            var config = _mapper.Map<Config>(configDto);
+            
+            config.Author = new User
+            {
+                Id = int.Parse(HttpContext.User.Identity.Name)
+            };
+            
+            _context.Configs.Attach(config);
             await _context.SaveChangesAsync();
+            
+            SavedConfigDto result = _mapper.Map<SavedConfigDto>(await _context.Configs
+                .Include(o => o.ConfigContent)
+                .Include(u => u.Microservice)
+                .ThenInclude(u => u.System)
+                .FirstAsync(c => c.Id.Equals(config.Id)));
 
-            return CreatedAtAction("GetConfig", new { id = config.Id }, config);
+            return CreatedAtAction("GetConfig", new { id = result.Id }, result);
         }
 
         // DELETE: api/Configs/5
-        [HttpDelete("{id}")]
+        [HttpDelete("{id}")] [Authorize(policy: "user")]
         public async Task<IActionResult> DeleteConfig(int id)
         {
             var config = await _context.Configs.FindAsync(id);
