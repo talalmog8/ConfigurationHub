@@ -1,10 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Configuration.Data;
-using ConfigurationHub.Domain;
 using ConfigurationHub.Domain.ConfigModels.MicroserviceModels;
 
 namespace ConfigurationHub.Controllers
@@ -14,17 +14,24 @@ namespace ConfigurationHub.Controllers
     public class MicroservicesController : ControllerBase
     {
         private readonly ConfigurationContext _context;
+        private readonly IMapper _mapper;
 
-        public MicroservicesController(ConfigurationContext context)
+        public MicroservicesController(ConfigurationContext context, IMapper mapper)
         {
             _context = context;
+            _mapper = mapper;
         }
 
         // GET: api/Microservices
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Microservice>>> GetMicroServices()
+        public async Task<ActionResult<IEnumerable<SavedMicroServiceDto>>> GetMicroServices(int skip, int take)
         {
-            return await _context.MicroServices.ToListAsync();
+            return await _context.MicroServices
+                .Skip(skip)
+                .Take(take)
+                .Include(k => k.System)
+                .Select(y => _mapper.Map<SavedMicroServiceDto>(y))
+                .ToListAsync();
         }
 
         // GET: api/Microservices/5
