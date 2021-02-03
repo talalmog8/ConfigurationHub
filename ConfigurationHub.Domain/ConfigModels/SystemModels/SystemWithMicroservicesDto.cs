@@ -5,6 +5,12 @@ namespace ConfigurationHub.Domain.ConfigModels.SystemModels
 {
     public class SystemWithMicroservicesDto : SavedSystemDto
     {
-        public List<SavedMicroServiceDto> Microservices { get; set; } = new List<SavedMicroServiceDto>();
+        public List<SavedMicroServiceShallowDto> Microservices { get; set; } = new List<SavedMicroServiceShallowDto>();
+    }
+
+    public class SavedMicroServiceShallowDto
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

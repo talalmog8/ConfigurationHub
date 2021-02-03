@@ -39,11 +39,13 @@ namespace ConfigurationHub.Controllers
 
         // GET: api/Systems/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Domain.ConfigModels.SystemModels.System>> GetSystem(int id)
+        public async Task<ActionResult<SystemWithMicroservicesDto>> GetSystem(int id)
         {
             var system = await _context.Systems
                 .Include(t => t.Microservices)
-                .FirstAsync(x => x.Id.Equals(id));
+                .Where(x => x.Id.Equals(id))
+                .Select(x => _mapper.Map<SystemWithMicroservicesDto>(x))
+                .FirstAsync();
 
             if (system == null)
             {
