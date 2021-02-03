@@ -81,8 +81,7 @@ namespace ConfigurationHub.Controllers
 
         // PUT: api/Configs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        [Authorize(policy: "user")]
+        [HttpPut("{id}")] [Authorize(policy: "user")]
         public async Task<IActionResult> PutConfig(int id, Config config)
         {
             if (id != config.Id)

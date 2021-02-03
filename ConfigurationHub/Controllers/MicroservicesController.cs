@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -51,32 +52,21 @@ namespace ConfigurationHub.Controllers
         // PUT: api/Microservices/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutMicroservice(int id, Microservice microservice)
+        public async Task<ActionResult<SavedMicroServiceDto>> PutMicroservice(int id, UpdatedMicroserviceDto microserviceDto)
         {
-            if (id != microservice.Id)
-            {
-                return BadRequest();
-            }
+            if (!(MicroserviceExists(id) && (id == microserviceDto.Id)))
+                return BadRequest("microservice with this address does not exist");
+
+            var microservice = _mapper.Map<Microservice>(microserviceDto);
 
             _context.Entry(microservice).State = EntityState.Modified;
 
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MicroserviceExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
+            await _context.SaveChangesAsync();
 
-            return NoContent();
+            return _mapper.Map<SavedMicroServiceDto>(
+                await _context.MicroServices
+                    .Include(y => y.System)
+                    .FirstAsync(c => c.Id.Equals(id)));
         }
 
         // POST: api/Microservices
