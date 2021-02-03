@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
@@ -37,9 +38,18 @@ namespace ConfigurationHub.Controllers
 
         // GET: api/Microservices/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Microservice>> GetMicroservice(int id)
+        public async Task<ActionResult<SavedMicroServiceWithConfigsDto>> GetMicroservice(int id)
         {
-            var microservice = await _context.MicroServices.FindAsync(id);
+            var microservice = await _context.MicroServices
+                .Include(c => c.System)
+                .Include(c => c.Configs)
+                .Where(x => x.Id.Equals(id))
+                .Select(x => new SavedMicroServiceWithConfigsDto
+                {
+                    MicroService = _mapper.Map<SavedMicroServiceDto>(x),
+                    ConfigIds = x.Configs.Select(t => t.Id)
+                })
+                .FirstAsync();
 
             if (microservice == null)
             {
@@ -57,9 +67,7 @@ namespace ConfigurationHub.Controllers
             if (!(MicroserviceExists(id) && (id == microserviceDto.Id)))
                 return BadRequest("microservice with this address does not exist");
 
-            var microservice = _mapper.Map<Microservice>(microserviceDto);
-
-            _context.Entry(microservice).State = EntityState.Modified;
+            _context.Entry(_mapper.Map<Microservice>(microserviceDto)).State = EntityState.Modified;
 
             await _context.SaveChangesAsync();
 
@@ -71,7 +79,7 @@ namespace ConfigurationHub.Controllers
 
         // POST: api/Microservices
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
+        [HttpPost] 
         public async Task<ActionResult<SavedMicroServiceDto>> PostMicroservice(NewMicroServiceDto microserviceDto)
         {
             var microservice = _mapper.Map<Microservice>(microserviceDto);
@@ -90,6 +98,7 @@ namespace ConfigurationHub.Controllers
         public async Task<IActionResult> DeleteMicroservice(int id)
         {
             var microservice = await _context.MicroServices.FindAsync(id);
+            
             if (microservice == null)
             {
                 return NotFound();
