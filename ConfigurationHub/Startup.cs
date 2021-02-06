@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using AutoMapper;
 using Configuration.Data;
 using ConfigurationHub.Core.Auth;
+using ConfigurationHub.Core.DI;
 using ConfigurationHub.Data.Repositories;
 using ConfigurationHub.Domain;
 using ConfigurationHub.General;
@@ -37,15 +38,12 @@ namespace ConfigurationHub
             services.AddCors();
             services.AddControllers();
             services.AddAutoMapper(typeof(AutoMapperProfile));
-
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "ConfigurationHub", Version = "v1" });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
-                    Description = @"JWT Authorization header using the Bearer scheme. \r\n\r\n 
-                      Enter 'Bearer' [space] and then your token in the text input below.
-                      \r\n\r\nExample: 'Bearer 12345abcdef'",
+                    Description = "Enter 'Bearer' [space] and then your token in the text input below. Example: 'Bearer 12345abcdef'",
                     Name = "Authorization",
                     In = ParameterLocation.Header,
                     Type = SecuritySchemeType.ApiKey,
@@ -71,18 +69,10 @@ namespace ConfigurationHub
                 });
             });
             services.AddControllers();
-
             services.AddDbContext<ConfigurationContext>(opt =>
                opt.UseSqlite(Configuration.GetConnectionString("dev"))
-                  .EnableSensitiveDataLogging()
-               );
-
-            var appSettingsSection = Configuration.GetSection("AppSettings");
-            services.Configure<AppSettings>(appSettingsSection);
-
-            var appSettings = appSettingsSection.Get<AppSettings>();
-            var key = Encoding.ASCII.GetBytes(appSettings.Secret);
-
+                  .EnableSensitiveDataLogging());
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
             services.AddAuthentication(x =>
                 {
                     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -108,7 +98,7 @@ namespace ConfigurationHub
                     x.TokenValidationParameters = new TokenValidationParameters
                     {
                         ValidateIssuerSigningKey = true,
-                        IssuerSigningKey = new SymmetricSecurityKey(key),
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings").Get<AppSettings>().Secret)),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };
@@ -124,10 +114,10 @@ namespace ConfigurationHub
                         policy.Requirements.Add(new EmptyAuthRequirement()));
                 }
             });
-
-            services.AddSingleton<IAuthorizationHandler, AuthorizationToUserOnly>();
-            services.AddScoped<IUserService, UserService>();
-            services.AddScoped<IJwtTokenUtils, JwtTokenUtils>();
+            services.Scan(x => x.FromCallingAssembly().InjectableAttributes())
+                .Scan(x => x.FromAssemblyOf<Core.DI.AssemblyEntryPoint>().InjectableAttributes())
+                .Scan(x => x.FromAssemblyOf<Data.DI.AssemblyEntryPoint>().InjectableAttributes())
+                .Scan(x => x.FromAssemblyOf<Domain.DI.AssemblyEntryPoint>().InjectableAttributes());
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using Configuration.Data;
+using ConfigurationHub.Core.DI;
 using ConfigurationHub.Domain.Auth;
 
 namespace ConfigurationHub.Data.Repositories
@@ -19,6 +20,7 @@ namespace ConfigurationHub.Data.Repositories
         long Count();
     }
 
+    [Scoped]
     public class UserService : IUserService
     {
         private readonly ConfigurationContext _context;

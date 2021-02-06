@@ -2,6 +2,7 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ConfigurationHub.Core.DI;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ConfigurationHub.Core.Auth
@@ -11,6 +12,7 @@ namespace ConfigurationHub.Core.Auth
         string CreateToken(string secret, string id);
     }
 
+    [Scoped]
     public class JwtTokenUtils : IJwtTokenUtils
     {
         private readonly Encoding _encoding;
@@ -30,8 +32,8 @@ namespace ConfigurationHub.Core.Auth
 
         public string CreateToken(string secret, string id)
         {
-            JwtSecurityTokenHandler tokenHandler = new();
-            SecurityTokenDescriptor tokenDescriptor = new()
+            JwtSecurityTokenHandler tokenHandler = new JwtSecurityTokenHandler();
+            SecurityTokenDescriptor tokenDescriptor = new SecurityTokenDescriptor()
             {
                 Subject = new ClaimsIdentity(new[]
                 {

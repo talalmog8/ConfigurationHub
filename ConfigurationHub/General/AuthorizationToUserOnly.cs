@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using ConfigurationHub.Core.DI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 
@@ -7,6 +8,8 @@ namespace ConfigurationHub.General
     public class EmptyAuthRequirement : IAuthorizationRequirement
     {
     }
+
+    [Scoped]
     public class AuthorizationToUserOnly : AuthorizationHandler<EmptyAuthRequirement>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, EmptyAuthRequirement requirement)
