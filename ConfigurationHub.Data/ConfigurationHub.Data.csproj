@@ -10,6 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\ConfigurationHub.Core\ConfigurationHub.Core.csproj" />
     <ProjectReference Include="..\ConfigurationHub.Domain\ConfigurationHub.Domain.csproj" />
   </ItemGroup>
 
