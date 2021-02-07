@@ -28,6 +28,7 @@ namespace ConfigurationHub.Domain
             CreateMap<UpdatedMicroserviceDto, Microservice>();
             CreateMap<Microservice, SavedMicroServiceWithConfigsDto>();
             CreateMap<Microservice, SavedMicroServiceShallowDto>();
+            CreateMap<UpdateSystemDto, ConfigModels.SystemModels.System>();
         }
     }
 }

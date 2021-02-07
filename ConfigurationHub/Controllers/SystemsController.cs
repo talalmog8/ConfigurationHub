@@ -56,7 +56,7 @@ namespace ConfigurationHub.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<SavedSystemDto>> PostMicroservice(NewSystemDto systemDto)
+        public async Task<ActionResult<SavedSystemDto>> PostSystem(NewSystemDto systemDto)
         {
             var system = _mapper.Map<Domain.ConfigModels.SystemModels.System>(systemDto);
 
@@ -66,6 +66,19 @@ namespace ConfigurationHub.Controllers
             var savedSystem = _mapper.Map<SavedSystemDto>(await _context.Systems.FirstAsync(c => c.Id.Equals(system.Id)));
 
             return CreatedAtAction("GetSystem", new { id = savedSystem.Id }, savedSystem);
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<SavedSystemDto>> UpdateSystem(int id, UpdateSystemDto systemDto)
+        {
+            if (!(SystemExists(id) && systemDto.Id.Equals(id)))
+                return BadRequest("system with this id does not exist");
+
+            _context.Entry(_mapper.Map<Domain.ConfigModels.SystemModels.System>(systemDto)).State = EntityState.Modified;
+
+            await _context.SaveChangesAsync();
+
+            return await _context.Systems.Where(x => x.Id.Equals(id)).Select(x => _mapper.Map<SavedSystemDto>(x)).FirstAsync();
         }
 
         // DELETE: api/Systems/5
@@ -88,6 +101,11 @@ namespace ConfigurationHub.Controllers
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private bool SystemExists(int id)
+        {
+            return _context.Systems.Any(x => x.Id.Equals(id));
         }
     }
 }
