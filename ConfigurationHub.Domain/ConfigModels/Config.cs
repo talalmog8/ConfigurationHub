@@ -17,7 +17,7 @@ namespace ConfigurationHub.Domain.ConfigModels
             LastModified = DateTime.UtcNow;
         }
 
-        [Range(1, Int32.MaxValue)] public int Id { get; set; }
+        [Required] public int Id { get; set; }
 
         public DateTime LastModified { get; set; }
         [Required] public User Author { get; set; }
