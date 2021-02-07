@@ -65,7 +65,7 @@ namespace ConfigurationHub.Controllers
         public async Task<ActionResult<SavedMicroServiceDto>> PutMicroservice(int id, UpdatedMicroserviceDto microserviceDto)
         {
             if (!(MicroserviceExists(id) && (id == microserviceDto.Id)))
-                return BadRequest("microservice with this address does not exist");
+                return BadRequest("microservice with this id does not exist");
 
             _context.Entry(_mapper.Map<Microservice>(microserviceDto)).State = EntityState.Modified;
 
