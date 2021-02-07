@@ -76,7 +76,19 @@ namespace ConfigurationHub.Controllers
 
             _context.Entry(_mapper.Map<Domain.ConfigModels.SystemModels.System>(systemDto)).State = EntityState.Modified;
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!SystemExists(id))
+                {
+                    return NotFound();
+                }
+
+                throw;
+            }
 
             return await _context.Systems.Where(x => x.Id.Equals(id)).Select(x => _mapper.Map<SavedSystemDto>(x)).FirstAsync();
         }
