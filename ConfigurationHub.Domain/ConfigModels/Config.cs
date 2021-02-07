@@ -4,6 +4,7 @@ using System.Runtime.CompilerServices;
 using ConfigurationHub.Domain.Auth;
 using ConfigurationHub.Domain.ConfigModels.Content;
 using ConfigurationHub.Domain.ConfigModels.MicroserviceModels;
+using ConfigurationHub.Domain.ConfigModels.SystemModels;
 using Microsoft.EntityFrameworkCore;
 
 namespace ConfigurationHub.Domain.ConfigModels
@@ -16,7 +17,7 @@ namespace ConfigurationHub.Domain.ConfigModels
             LastModified = DateTime.UtcNow;
         }
 
-        [Required] public int Id { get; set; }
+        [Range(1, Int32.MaxValue)] public int Id { get; set; }
 
         public DateTime LastModified { get; set; }
         [Required] public User Author { get; set; }
