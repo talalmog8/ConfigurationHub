@@ -7,6 +7,7 @@ using Configuration.Data;
 using ConfigurationHub.Domain;
 using ConfigurationHub.Domain.Auth;
 using ConfigurationHub.Domain.ConfigModels;
+using ConfigurationHub.Domain.ConfigModels.Content;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -81,15 +82,28 @@ namespace ConfigurationHub.Controllers
 
         // PUT: api/Configs/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")] [Authorize(policy: "user")]
-        public async Task<IActionResult> PutConfig(int id, Config config)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> PutConfig(int id, UpdateConfigDto configDto)
         {
-            if (id != config.Id)
+            if (!(ConfigExists(id) && configDto.Id.Equals(id)))
             {
-                return BadRequest();
+                return BadRequest("this configuration doesn't exist in this manner");
             }
 
-            _context.Attach(config);
+            var config = await _context.Configs
+                .Where(x => x.Id.Equals(id))
+                .Include(x => x.ConfigContent)
+                .Include(x => x.Author)
+                .FirstAsync();
+
+            if (config.Author.Id.ToString() != ControllerContext.HttpContext.User.Identity.Name)
+                return BadRequest("you are not the owner of this configuration");
+
+            if (!config.ConfigContent.Id.Equals(configDto.ConfigContent.Id))
+                return BadRequest("mismatching config content ids");
+
+            _context.Configs.Attach(config);
+            config.ConfigContent = _mapper.Map<ConfigContent>(configDto.ConfigContent);
 
             try
             {
@@ -105,7 +119,7 @@ namespace ConfigurationHub.Controllers
                 throw;
             }
 
-            return NoContent();
+            return Ok(new { ConfigId = config.Id, ConfigContentId = config.ConfigContent.Id, UpdatedContent = config.ConfigContent.Content });
         }
 
         // POST: api/Configs
